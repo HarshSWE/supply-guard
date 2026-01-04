@@ -1,0 +1,105 @@
+<div class="space-y-8">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div
+      class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm hover:bg-slate-50 transition"
+    >
+      <p class="text-sm text-slate-600">Total Suppliers</p>
+      <p class="text-3xl font-semibold text-slate-900 mt-2">—</p>
+    </div>
+
+    <div
+      class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm hover:bg-slate-50 transition"
+    >
+      <p class="text-sm text-slate-600">High-Risk Suppliers</p>
+      <p class="text-3xl font-semibold text-red-500 mt-2">—</p>
+    </div>
+
+    <div
+      class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm hover:bg-slate-50 transition"
+    >
+      <p class="text-sm text-slate-600">Average Risk Score</p>
+      <p class="text-3xl font-semibold text-slate-900 mt-2">—</p>
+    </div>
+
+    <div
+      class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm hover:bg-slate-50 transition"
+    >
+      <p class="text-sm text-slate-600">Active Alerts</p>
+      <p class="text-3xl font-semibold text-blue-600 mt-2">—</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white border border-slate-200 rounded-lg p-6">
+      <h2 class="text-lg font-semibold text-slate-900 mb-2">Average Risk Trend</h2>
+      <p class="text-sm text-slate-600 mb-4">Average supplier risk score over time</p>
+
+      <div
+        class="h-64 flex items-center justify-center text-slate-400 border border-dashed border-slate-300 rounded"
+      >
+        Risk trend chart placeholder
+      </div>
+    </div>
+
+    <div class="bg-white border border-slate-200 rounded-lg p-6">
+      <h2 class="text-lg font-semibold text-slate-900 mb-2">Supplier Risk Map</h2>
+      <p class="text-sm text-slate-600 mb-4">Suppliers color-coded by risk level</p>
+
+      <div
+        class="h-64 flex items-center justify-center text-slate-400 border border-dashed border-slate-300 rounded"
+      >
+        Map visualization placeholder
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 bg-white border border-slate-200 rounded-lg p-6">
+      <h2 class="text-lg font-semibold text-slate-900 mb-4">Recent Alerts</h2>
+
+      <div class="space-y-3 max-h-64 overflow-y-auto">
+        <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
+          <span class="text-sm text-slate-900">Supplier risk exceeded threshold</span>
+          <span class="text-xs font-medium text-red-500">Critical</span>
+        </div>
+
+        <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
+          <span class="text-sm text-slate-900">Negative sentiment detected</span>
+          <span class="text-xs font-medium text-amber-500">Moderate</span>
+        </div>
+
+        <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
+          <span class="text-sm text-slate-900">Compliance data updated</span>
+          <span class="text-xs font-medium text-blue-500">Info</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white border border-slate-200 rounded-lg p-6">
+      <h2 class="text-lg font-semibold text-slate-900 mb-4">Filters</h2>
+
+      <div class="space-y-4">
+        <div>
+          <label class="text-sm text-slate-600">Region</label>
+          <select class="w-full mt-1 bg-slate-50 border border-slate-300 rounded px-3 py-2 text-sm">
+            <option>All</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm text-slate-600">Industry</label>
+          <select class="w-full mt-1 bg-slate-50 border border-slate-300 rounded px-3 py-2 text-sm">
+            <option>All</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm text-slate-600">Risk Level</label>
+          <select class="w-full mt-1 bg-slate-50 border border-slate-300 rounded px-3 py-2 text-sm">
+            <option>All</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
