@@ -1,0 +1,59 @@
+<div class="h-screen flex">
+  <aside class="w-52 bg-slate-800 text-slate-200 flex flex-col border-r border-slate-700">
+    <div class="px-6 py-4 text-lg font-semibold">SupplyGuard</div>
+
+    <nav class="flex-1 px-2 space-y-1">
+      <button
+        *ngFor="let item of menu"
+        (click)="select(item.key)"
+        class="w-full flex items-center gap-3 px-4 py-2 rounded-md text-sm transition-all duration-150"
+        [ngClass]="{
+          'bg-slate-700 text-white': selected === item.key,
+          'text-slate-400 hover:text-white hover:bg-slate-700': selected !== item.key
+        }"
+      >
+        <span class="material-icons text-base">
+          {{ item.icon }}
+        </span>
+        {{ item.label }}
+      </button>
+    </nav>
+  </aside>
+
+  <main class="flex-1 bg-slate-50 p-8 overflow-auto">
+    <ng-container [ngSwitch]="selected">
+      <section *ngSwitchCase="'overview'">
+        <h1 class="text-2xl font-semibold text-slate-900 mb-6">Overview</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white border border-slate-200 rounded-lg p-5">
+            <p class="text-sm text-slate-500">Total Suppliers</p>
+            <p class="text-2xl font-bold text-slate-900">128</p>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-lg p-5">
+            <p class="text-sm text-slate-500">High Risk</p>
+            <p class="text-2xl font-bold text-blue-600">12</p>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-lg p-5">
+            <p class="text-sm text-slate-500">Active Alerts</p>
+            <p class="text-2xl font-bold text-slate-900">7</p>
+          </div>
+        </div>
+      </section>
+
+      <section *ngSwitchCase="'suppliers'">
+        <h1 class="text-2xl font-semibold text-slate-900">Suppliers</h1>
+      </section>
+
+      <section *ngSwitchCase="'alerts'">
+        <h1 class="text-2xl font-semibold text-slate-900">Alerts</h1>
+      </section>
+
+      <section *ngSwitchCase="'admin'">
+        <h1 class="text-2xl font-semibold text-slate-900">Admin</h1>
+      </section>
+    </ng-container>
+  </main>
+</div>
