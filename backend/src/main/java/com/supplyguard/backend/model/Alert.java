@@ -18,4 +18,13 @@ public class Alert {
 
   private boolean active;
 
+  public Alert() {}
+
+  public Alert(Supplier supplier, String severity, String message, boolean active) {
+    this.supplier = supplier;
+    this.severity = severity;
+    this.message = message;
+    this.active = active;
+  }
+
 }
