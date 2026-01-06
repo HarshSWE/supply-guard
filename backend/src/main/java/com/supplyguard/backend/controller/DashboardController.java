@@ -1,10 +1,14 @@
 package com.supplyguard.backend.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.supplyguard.backend.dto.DashboardStatsDto;
+import com.supplyguard.backend.model.RiskSnapshot;
+import com.supplyguard.backend.repository.RiskSnapshotRepository;
 import com.supplyguard.backend.service.DashboardService;
 
 @RestController
@@ -12,9 +16,14 @@ import com.supplyguard.backend.service.DashboardService;
 public class DashboardController {
 
   private final DashboardService dashboardService;
+  private final RiskSnapshotRepository riskSnapshotRepo;
 
-  public DashboardController(DashboardService dashboardService) {
+  public DashboardController(
+      DashboardService dashboardService,
+      RiskSnapshotRepository riskSnapshotRepo
+  ) {
     this.dashboardService = dashboardService;
+    this.riskSnapshotRepo = riskSnapshotRepo;
   }
 
   @GetMapping("/stats")
@@ -33,5 +42,10 @@ public class DashboardController {
         dashboardService.getAverageRiskScore(),
         dashboardService.getActiveAlerts()
     );
+  }
+
+  @GetMapping("/risk-trend")
+  public List<RiskSnapshot> getRiskTrend() {
+    return riskSnapshotRepo.findAllByOrderBySnapshotDateAsc();
   }
 }
