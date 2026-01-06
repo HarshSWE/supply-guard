@@ -4,28 +4,33 @@
       class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm hover:bg-slate-50 transition"
     >
       <p class="text-sm text-slate-600">Total Suppliers</p>
-      <p class="text-3xl font-semibold text-slate-900 mt-2">—</p>
+      <p class="text-3xl font-semibold text-blue-500 mt-2">{{ stats?.totalSuppliers ?? '—' }}</p>
     </div>
 
     <div
       class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm hover:bg-slate-50 transition"
     >
       <p class="text-sm text-slate-600">High-Risk Suppliers</p>
-      <p class="text-3xl font-semibold text-red-500 mt-2">—</p>
+      <p class="text-3xl font-semibold text-red-500 mt-2">{{ stats?.highRiskSuppliers ?? '—' }}</p>
     </div>
 
     <div
       class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm hover:bg-slate-50 transition"
     >
       <p class="text-sm text-slate-600">Average Risk Score</p>
-      <p class="text-3xl font-semibold text-slate-900 mt-2">—</p>
+      <p class="text-3xl font-semibold text-slate-900 mt-2">
+        <ng-container *ngIf="stats?.averageRiskScore != null; else dash">
+          {{ stats?.averageRiskScore | number : '1.1-1' }}
+        </ng-container>
+        <ng-template #dash>—</ng-template>
+      </p>
     </div>
 
     <div
       class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm hover:bg-slate-50 transition"
     >
       <p class="text-sm text-slate-600">Active Alerts</p>
-      <p class="text-3xl font-semibold text-blue-600 mt-2">—</p>
+      <p class="text-3xl font-semibold text-red-600 mt-2">{{ stats?.activeAlerts ?? '—' }}</p>
     </div>
   </div>
 
