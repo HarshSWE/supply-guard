@@ -6,17 +6,23 @@ import { RiskTrendPoint } from '../models/risk-trend-point.model';
 import { Alert } from '../models/alert.model';
 import { Chart } from 'chart.js/auto';
 import * as L from 'leaflet';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-overview',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './overview.component.html',
 })
 export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   stats?: DashboardStats;
   riskTrend: RiskTrendPoint[] = [];
   alerts: Alert[] = [];
+  filteredAlerts: Alert[] = [];
+
+  selectedRegion: string = 'All';
+  selectedIndustry: string = 'All';
+  selectedRiskLevel: string = 'All';
 
   suppliers: any[] = [];
   map?: L.Map;
@@ -85,10 +91,26 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  applyFilters(): void {
+    this.filteredAlerts = this.alerts.filter((alert) => {
+      const matchesRegion =
+        this.selectedRegion === 'All' || alert.supplier?.region === this.selectedRegion;
+
+      const matchesIndustry =
+        this.selectedIndustry === 'All' || alert.supplier?.industry === this.selectedIndustry;
+
+      const matchesRisk =
+        this.selectedRiskLevel === 'All' || alert.severity === this.selectedRiskLevel;
+
+      return matchesRegion && matchesIndustry && matchesRisk;
+    });
+  }
+
   loadAlerts(): void {
     this.dashboardService.getAlerts().subscribe({
       next: (data) => {
         this.alerts = data;
+        this.applyFilters();
       },
       error: (err) => console.error('Failed to load alerts', err),
     });
