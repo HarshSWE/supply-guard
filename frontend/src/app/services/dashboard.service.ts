@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { DashboardStats } from '../models/dashboard-stats.model';
 import { RiskTrendPoint } from '../models/risk-trend-point.model';
 import { Supplier } from '../models/supplier.model';
+import { Alert } from '../models/alert.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,5 +22,9 @@ export class DashboardService {
 
   getSuppliers(): Observable<Supplier[]> {
     return this.http.get<Supplier[]>('http://localhost:8080/api/suppliers');
+  }
+
+  getAlerts() {
+    return this.http.get<Alert[]>('http://localhost:8080/api/alerts');
   }
 }

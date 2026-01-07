@@ -57,20 +57,28 @@
       <h2 class="text-lg font-semibold text-slate-900 mb-4">Recent Alerts</h2>
 
       <div class="space-y-3 max-h-64 overflow-y-auto">
-        <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
-          <span class="text-sm text-slate-900">Supplier risk exceeded threshold</span>
-          <span class="text-xs font-medium text-red-500">Critical</span>
+        <div
+          *ngFor="let alert of alerts"
+          class="flex items-center justify-between p-3 border border-slate-200 rounded"
+        >
+          <span class="text-sm text-slate-900">
+            {{ alert.message }}
+            <span class="text-xs text-slate-500"> — {{ alert.supplier?.name }} </span>
+          </span>
+
+          <span
+            class="text-xs font-medium"
+            [ngClass]="{
+              'text-red-500': alert.severity === 'CRITICAL',
+              'text-amber-500': alert.severity === 'MODERATE',
+              'text-blue-500': alert.severity === 'INFO'
+            }"
+          >
+            {{ alert.severity }}
+          </span>
         </div>
 
-        <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
-          <span class="text-sm text-slate-900">Negative sentiment detected</span>
-          <span class="text-xs font-medium text-amber-500">Moderate</span>
-        </div>
-
-        <div class="flex items-center justify-between p-3 border border-slate-200 rounded">
-          <span class="text-sm text-slate-900">Compliance data updated</span>
-          <span class="text-xs font-medium text-blue-500">Info</span>
-        </div>
+        <div *ngIf="alerts.length === 0" class="text-sm text-slate-500">No active alerts</div>
       </div>
     </div>
 

@@ -13,9 +13,7 @@ public class Alert {
   private Supplier supplier;
 
   private String severity;
-
   private String message;
-
   private boolean active;
 
   public Alert() {}
@@ -27,4 +25,23 @@ public class Alert {
     this.active = active;
   }
 
+  public Long getId() {
+    return id;
+  }
+
+  public Supplier getSupplier() {
+    return supplier;
+  }
+
+  public String getSeverity() {
+    return severity;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
 }

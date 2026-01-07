@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DashboardService } from '../services/dashboard.service';
 import { DashboardStats } from '../models/dashboard-stats.model';
 import { RiskTrendPoint } from '../models/risk-trend-point.model';
+import { Alert } from '../models/alert.model';
 import { Chart } from 'chart.js/auto';
 import * as L from 'leaflet';
 
@@ -15,6 +16,7 @@ import * as L from 'leaflet';
 export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   stats?: DashboardStats;
   riskTrend: RiskTrendPoint[] = [];
+  alerts: Alert[] = [];
 
   suppliers: any[] = [];
   map?: L.Map;
@@ -25,6 +27,7 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.loadDashboardStats();
     this.loadRiskTrend();
+    this.loadAlerts();
   }
 
   ngAfterViewInit(): void {
@@ -49,16 +52,6 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
         this.renderChart();
       },
       error: (err) => console.error('Failed to load risk trend', err),
-    });
-  }
-
-  loadSuppliers(): void {
-    this.dashboardService.getSuppliers().subscribe({
-      next: (data) => {
-        this.suppliers = data;
-        this.initMap();
-      },
-      error: (err) => console.error('Failed to load suppliers', err),
     });
   }
 
@@ -89,6 +82,25 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
           },
         },
       },
+    });
+  }
+
+  loadAlerts(): void {
+    this.dashboardService.getAlerts().subscribe({
+      next: (data) => {
+        this.alerts = data;
+      },
+      error: (err) => console.error('Failed to load alerts', err),
+    });
+  }
+
+  loadSuppliers(): void {
+    this.dashboardService.getSuppliers().subscribe({
+      next: (data) => {
+        this.suppliers = data;
+        this.initMap();
+      },
+      error: (err) => console.error('Failed to load suppliers', err),
     });
   }
 
