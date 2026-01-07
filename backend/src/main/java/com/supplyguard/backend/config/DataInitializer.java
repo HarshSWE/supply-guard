@@ -26,13 +26,10 @@ public class DataInitializer {
   ) {
     return args -> {
 
-      if (supplierRepo.count() > 0) {
-          return; 
-      }
 
-      Supplier s1 = new Supplier("Acme Corp", 85, "North America", "Manufacturing");
-      Supplier s2 = new Supplier("Globex", 45, "Europe", "Logistics");
-      Supplier s3 = new Supplier("Initech", 72, "Asia", "Technology");
+      Supplier s1 = new Supplier("Acme Corp", 85, "North America", "Manufacturing",43.6532, -79.3832 );
+      Supplier s2 = new Supplier("Globex", 45, "Europe", "Logistics",  48.8566, 2.3522 );
+      Supplier s3 = new Supplier("Initech", 72, "Asia", "Technology", 35.6895, 139.6917 );
 
       supplierRepo.save(s1);
       supplierRepo.save(s2);

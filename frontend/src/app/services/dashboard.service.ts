@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DashboardStats } from '../models/dashboard-stats.model';
 import { RiskTrendPoint } from '../models/risk-trend-point.model';
+import { Supplier } from '../models/supplier.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,5 +17,9 @@ export class DashboardService {
 
   getRiskTrend() {
     return this.http.get<RiskTrendPoint[]>('http://localhost:8080/api/dashboard/risk-trend');
+  }
+
+  getSuppliers(): Observable<Supplier[]> {
+    return this.http.get<Supplier[]>('http://localhost:8080/api/suppliers');
   }
 }

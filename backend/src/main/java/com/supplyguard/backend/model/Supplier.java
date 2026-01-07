@@ -14,13 +14,18 @@ public class Supplier {
   private String region;
   private String industry;
 
+  private Double latitude;
+  private Double longitude;
+
   public Supplier() {}
 
-  public Supplier(String name, double riskScore, String region, String industry) {
+  public Supplier(String name, double riskScore, String region, String industry, Double latitude, Double longitude) {
     this.name = name;
     this.riskScore = riskScore;
     this.region = region;
     this.industry = industry;
+    this.latitude = latitude;
+    this.longitude = longitude;
   }
 
   public double getRiskScore() {
@@ -46,4 +51,13 @@ public class Supplier {
   public String getIndustry() {
     return industry;
   }
+
+  public Double getLatitude(){
+    return latitude;
+  }
+
+  public Double getLongitude(){
+    return longitude;
+  }
 }
+
