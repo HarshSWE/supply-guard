@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OverviewComponent } from '../overview/overview.component';
+import { SuppliersComponent } from '../suppliers/suppliers.component';
 
 type MenuKey = 'overview' | 'suppliers' | 'alerts' | 'admin';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CommonModule, OverviewComponent],
+  imports: [CommonModule, OverviewComponent, SuppliersComponent],
   templateUrl: './landing-page.component.html',
 })
 export class LandingPageComponent {

@@ -1,6 +1,6 @@
 package com.supplyguard.backend.dto;
 
-public class DashboardStatsDto {
+public class DashboardStatsDTO {
 
   private long totalSuppliers;
   private long highRiskSuppliers;
@@ -8,7 +8,7 @@ public class DashboardStatsDto {
   private double averageRiskScore;
   private long activeAlerts;
 
-  public DashboardStatsDto(
+  public DashboardStatsDTO(
       long totalSuppliers,
       long highRiskSuppliers,
       double highRiskPercentage,

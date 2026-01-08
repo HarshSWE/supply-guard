@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.supplyguard.backend.dto.DashboardStatsDto;
+import com.supplyguard.backend.dto.DashboardStatsDTO;
 import com.supplyguard.backend.model.RiskSnapshot;
 import com.supplyguard.backend.repository.RiskSnapshotRepository;
 import com.supplyguard.backend.service.DashboardService;
@@ -27,7 +27,7 @@ public class DashboardController {
   }
 
   @GetMapping("/stats")
-  public DashboardStatsDto getDashboardStats() {
+  public DashboardStatsDTO getDashboardStats() {
 
     long total = dashboardService.getTotalSuppliers();
     long highRisk = dashboardService.getHighRiskSuppliers();
@@ -35,7 +35,7 @@ public class DashboardController {
     double highRiskPercentage =
         total == 0 ? 0 : (highRisk * 100.0) / total;
 
-    return new DashboardStatsDto(
+    return new DashboardStatsDTO(
         total,
         highRisk,
         highRiskPercentage,

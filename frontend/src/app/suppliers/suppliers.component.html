@@ -1,0 +1,120 @@
+<div class="flex gap-4 mb-6">
+  <input
+    type="text"
+    placeholder="Search suppliers..."
+    class="flex-1 px-4 py-2 border rounded"
+    [(ngModel)]="search"
+    (input)="loadSuppliers()"
+  />
+
+  <div class="relative">
+    <select
+      [(ngModel)]="region"
+      (change)="loadSuppliers()"
+      class="appearance-none px-3 py-2 pr-8 border rounded"
+    >
+      <option>All</option>
+      <option>North America</option>
+      <option>Europe</option>
+      <option>Asia</option>
+      <option>Africa</option>
+      <option>South America</option>
+    </select>
+
+    <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
+      ▼
+    </span>
+  </div>
+
+  <div class="relative">
+    <select
+      [(ngModel)]="industry"
+      (change)="loadSuppliers()"
+      class="appearance-none px-3 py-2 pr-8 border rounded"
+    >
+      <option>All</option>
+      <option>Manufacturing</option>
+      <option>Logistics</option>
+      <option>Technology</option>
+      <option>Mining</option>
+      <option>Pharmaceuticals</option>
+      <option>Food Processing</option>
+      <option>Transportation</option>
+    </select>
+
+    <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
+      ▼
+    </span>
+  </div>
+
+  <div class="relative">
+    <select
+      [(ngModel)]="riskLevel"
+      (change)="loadSuppliers()"
+      class="appearance-none px-3 py-2 pr-8 border rounded"
+    >
+      <option>All</option>
+      <option value="low">Low</option>
+      <option value="medium">Medium</option>
+      <option value="high">High</option>
+    </select>
+
+    <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
+      ▼
+    </span>
+  </div>
+</div>
+
+<div class="bg-white border rounded shadow-sm">
+  <table class="w-full text-sm">
+    <thead class="bg-slate-100 text-slate-600">
+      <tr>
+        <th class="p-3 text-left">Supplier</th>
+        <th class="p-3 text-left">Region</th>
+        <th class="p-3 text-left">Industry</th>
+        <th class="p-3 text-left">Risk</th>
+        <th class="p-3 text-left">Last Updated</th>
+        <th class="p-3 text-right">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let s of suppliers" class="border-t hover:bg-slate-50">
+        <td class="p-3 font-medium">{{ s.name }}</td>
+        <td class="p-3">{{ s.region }}</td>
+        <td class="p-3">{{ s.industry }}</td>
+
+        <td class="p-3">
+          <span
+            class="px-2 py-1 rounded text-xs font-medium"
+            [ngClass]="{
+              'bg-red-100 text-red-700': s.riskScore >= 70,
+              'bg-amber-100 text-amber-700': s.riskScore >= 40 && s.riskScore < 70,
+              'bg-green-100 text-green-700': s.riskScore < 40
+            }"
+          >
+            {{ s.riskScore }}
+          </span>
+        </td>
+
+        <td class="p-3">{{ s.lastUpdated }}</td>
+
+        <td class="p-3 text-right space-x-3">
+          <button class="text-slate-500 hover:text-blue-600 transition" title="View Details">
+            <span class="material-icons text-base">visibility</span>
+          </button>
+
+          <button class="text-slate-500 hover:text-amber-600 transition" title="Add to Watchlist">
+            <span class="material-icons text-base">star_border</span>
+          </button>
+        </td>
+      </tr>
+
+      <tr *ngIf="suppliers.length === 0">
+        <td colspan="6" class="p-6 text-center text-slate-500">
+          No suppliers match the selected filters
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

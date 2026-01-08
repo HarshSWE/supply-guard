@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
 import { DashboardStats } from '../models/dashboard-stats.model';
 import { RiskTrendPoint } from '../models/risk-trend-point.model';
 import { Supplier } from '../models/supplier.model';
 import { Alert } from '../models/alert.model';
+
+const API_BASE = 'http://localhost:8080/api';
 
 @Injectable({
   providedIn: 'root',
@@ -13,18 +16,42 @@ export class DashboardService {
   constructor(private http: HttpClient) {}
 
   getDashboardStats(): Observable<DashboardStats> {
-    return this.http.get<DashboardStats>('http://localhost:8080/api/dashboard/stats');
+    return this.http.get<DashboardStats>(`${API_BASE}/dashboard/stats`);
   }
 
-  getRiskTrend() {
-    return this.http.get<RiskTrendPoint[]>('http://localhost:8080/api/dashboard/risk-trend');
+  getRiskTrend(): Observable<RiskTrendPoint[]> {
+    return this.http.get<RiskTrendPoint[]>(`${API_BASE}/dashboard/risk-trend`);
   }
 
   getSuppliers(): Observable<Supplier[]> {
-    return this.http.get<Supplier[]>('http://localhost:8080/api/suppliers');
+    return this.http.get<Supplier[]>(`${API_BASE}/suppliers`);
   }
 
-  getAlerts() {
-    return this.http.get<Alert[]>('http://localhost:8080/api/alerts');
+  getAlerts(): Observable<Alert[]> {
+    return this.http.get<Alert[]>(`${API_BASE}/alerts`);
+  }
+
+  getSupplierTable(filters: {
+    search?: string;
+    region?: string;
+    industry?: string;
+    riskLevel?: string;
+  }): Observable<any[]> {
+    let params = new HttpParams();
+
+    if (filters.search) {
+      params = params.set('search', filters.search);
+    }
+    if (filters.region) {
+      params = params.set('region', filters.region);
+    }
+    if (filters.industry) {
+      params = params.set('industry', filters.industry);
+    }
+    if (filters.riskLevel) {
+      params = params.set('riskLevel', filters.riskLevel);
+    }
+
+    return this.http.get<any[]>(`${API_BASE}/suppliers/table`, { params });
   }
 }
