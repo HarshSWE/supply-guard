@@ -3,10 +3,12 @@ package com.supplyguard.backend.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.supplyguard.backend.dto.SupplierDetailsDTO;
 import com.supplyguard.backend.dto.SupplierTableDTO;
 import com.supplyguard.backend.model.Supplier;
 import com.supplyguard.backend.repository.SupplierRepository;
@@ -44,6 +46,20 @@ public class SupplierController {
                 region,
                 industry,
                 riskLevel
+        );
+    }
+
+    @GetMapping("/{id}")
+    public SupplierDetailsDTO getSupplierById(@PathVariable Long id) {
+        Supplier supplier = supplierRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+
+        return new SupplierDetailsDTO(
+                supplier.getId(),
+                supplier.getName(),
+                supplier.getIndustry(),
+                supplier.getRegion(),
+                supplier.getRiskScore()
         );
     }
 }

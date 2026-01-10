@@ -1,6 +1,7 @@
 package com.supplyguard.backend.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Alert {
@@ -16,6 +17,9 @@ public class Alert {
   private String message;
   private boolean active;
 
+  @Column(nullable = false, updatable = false)
+  private LocalDateTime createdAt;
+
   public Alert() {}
 
   public Alert(Supplier supplier, String severity, String message, boolean active) {
@@ -23,6 +27,11 @@ public class Alert {
     this.severity = severity;
     this.message = message;
     this.active = active;
+  }
+
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDateTime.now();
   }
 
   public Long getId() {
@@ -43,5 +52,9 @@ public class Alert {
 
   public boolean isActive() {
     return active;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
   }
 }

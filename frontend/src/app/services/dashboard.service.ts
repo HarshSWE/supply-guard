@@ -54,4 +54,24 @@ export class DashboardService {
 
     return this.http.get<any[]>(`${API_BASE}/suppliers/table`, { params });
   }
+
+  getSupplierById(id: number) {
+    return this.http.get<any>(`${API_BASE}/suppliers/${id}`);
+  }
+
+  getSupplierRiskCategories(supplierId: number): Observable<any> {
+    return this.http.get(`${API_BASE}/suppliers/${supplierId}/risk-categories`);
+  }
+
+  getSupplierRiskTrend(supplierId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${API_BASE}/suppliers/${supplierId}/risk-trend`);
+  }
+
+  getSupplierAlerts(supplierId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${API_BASE}/suppliers/${supplierId}/alerts`);
+  }
+
+  getSupplierNews(supplierId: number): Observable<any> {
+    return this.http.get(`${API_BASE}/suppliers/${supplierId}/news`);
+  }
 }

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard.service';
 
 @Component({
@@ -17,7 +18,11 @@ export class SuppliersComponent implements OnInit {
   industry = 'All';
   riskLevel = 'All';
 
-  constructor(private dashboardService: DashboardService) {}
+  constructor(
+    private dashboardService: DashboardService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadSuppliers();
@@ -32,8 +37,15 @@ export class SuppliersComponent implements OnInit {
         riskLevel: this.riskLevel !== 'All' ? this.riskLevel : undefined,
       })
       .subscribe({
-        next: (data) => (this.suppliers = data),
+        next: (data) => {
+          this.suppliers = data;
+          this.cdr.detectChanges();
+        },
         error: (err) => console.error('Failed to load suppliers', err),
       });
+  }
+
+  viewSupplier(id: number): void {
+    this.router.navigate(['/suppliers', id]);
   }
 }

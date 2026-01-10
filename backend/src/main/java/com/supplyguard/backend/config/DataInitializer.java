@@ -7,12 +7,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.supplyguard.backend.model.Alert;
-import com.supplyguard.backend.model.RiskSnapshot;
-import com.supplyguard.backend.model.Supplier;
-import com.supplyguard.backend.repository.AlertRepository;
-import com.supplyguard.backend.repository.RiskSnapshotRepository;
-import com.supplyguard.backend.repository.SupplierRepository;
+import com.supplyguard.backend.model.*;
+import com.supplyguard.backend.repository.*;
 
 @Configuration
 public class DataInitializer {
@@ -21,7 +17,9 @@ public class DataInitializer {
   CommandLineRunner initData(
       SupplierRepository supplierRepo,
       AlertRepository alertRepo,
-      RiskSnapshotRepository riskSnapshotRepo
+      RiskSnapshotRepository riskSnapshotRepo,
+      RiskCategoryRepository riskCategoryRepo,
+      SupplierRiskSnapshotRepository supplierRiskSnapshotRepo
   ) {
     return args -> {
 
@@ -81,6 +79,37 @@ public class DataInitializer {
           new RiskSnapshot(66.2, LocalDate.now().minusDays(3)),
           new RiskSnapshot(65.4, LocalDate.now())
       ));
+
+      riskCategoryRepo.saveAll(List.of(
+          new RiskCategory(s1, 88, 82, 90, 80),  
+          new RiskCategory(s2, 40, 50, 45, 42), 
+          new RiskCategory(s3, 65, 75, 70, 78),  
+          new RiskCategory(s4, 95, 88, 92, 89),  
+          new RiskCategory(s5, 30, 35, 32, 36),  
+          new RiskCategory(s6, 55, 60, 58, 59),
+          new RiskCategory(s7, 70, 65, 68, 64)   
+      ));
+
+      supplierRiskSnapshotRepo.saveAll(List.of(
+          new SupplierRiskSnapshot(s1, 78, LocalDate.now().minusDays(30)),
+          new SupplierRiskSnapshot(s1, 80, LocalDate.now().minusDays(25)),
+          new SupplierRiskSnapshot(s1, 82, LocalDate.now().minusDays(20)),
+          new SupplierRiskSnapshot(s1, 84, LocalDate.now().minusDays(15)),
+          new SupplierRiskSnapshot(s1, 85, LocalDate.now().minusDays(10)),
+          new SupplierRiskSnapshot(s1, 87, LocalDate.now().minusDays(5)),
+          new SupplierRiskSnapshot(s1, 85, LocalDate.now())
+      ));
+
+      supplierRiskSnapshotRepo.saveAll(List.of(
+          new SupplierRiskSnapshot(s3, 65, LocalDate.now().minusDays(30)),
+          new SupplierRiskSnapshot(s3, 67, LocalDate.now().minusDays(25)),
+          new SupplierRiskSnapshot(s3, 70, LocalDate.now().minusDays(20)),
+          new SupplierRiskSnapshot(s3, 71, LocalDate.now().minusDays(15)),
+          new SupplierRiskSnapshot(s3, 73, LocalDate.now().minusDays(10)),
+          new SupplierRiskSnapshot(s3, 72, LocalDate.now().minusDays(5)),
+          new SupplierRiskSnapshot(s3, 72, LocalDate.now())
+      ));
+
     };
   }
 }

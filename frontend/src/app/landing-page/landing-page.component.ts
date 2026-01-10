@@ -17,7 +17,6 @@ export class LandingPageComponent {
   menu: { key: MenuKey; label: string; icon: string }[] = [
     { key: 'overview', label: 'Overview', icon: 'dashboard' },
     { key: 'suppliers', label: 'Suppliers', icon: 'factory' },
-    { key: 'alerts', label: 'Alerts', icon: 'warning' },
     { key: 'admin', label: 'Admin', icon: 'settings' },
   ];
 
