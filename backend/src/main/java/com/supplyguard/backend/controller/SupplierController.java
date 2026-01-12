@@ -13,6 +13,8 @@ import com.supplyguard.backend.dto.SupplierTableDTO;
 import com.supplyguard.backend.model.Supplier;
 import com.supplyguard.backend.repository.SupplierRepository;
 import com.supplyguard.backend.service.SupplierService;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/suppliers")
@@ -62,4 +64,20 @@ public class SupplierController {
                 supplier.getRiskScore()
         );
     }
+
+    @PutMapping("/{id}")
+    public Supplier updateSupplier(
+        @PathVariable Long id,
+        @RequestBody Supplier updated
+    ) {
+        Supplier existing = supplierRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Supplier not found"));
+
+        existing.setRiskScore(updated.getRiskScore());
+        existing.setRegion(updated.getRegion());
+        existing.setIndustry(updated.getIndustry());
+
+        return supplierRepo.save(existing);
+    }
+    
 }

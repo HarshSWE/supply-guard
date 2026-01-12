@@ -59,5 +59,14 @@ public class Supplier {
   public Double getLongitude(){
     return longitude;
   }
+
+  public void setRegion(String region) {
+    this.region = region;
+  }
+
+  public void setIndustry(String industry) {
+    this.industry = industry;
+  }
+  
 }
 

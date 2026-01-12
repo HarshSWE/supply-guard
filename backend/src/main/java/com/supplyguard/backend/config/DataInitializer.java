@@ -49,7 +49,7 @@ public class DataInitializer {
       );
 
       Supplier s6 = new Supplier(
-          "Nile Freight", 58, "Africa", "Transportation",
+          "Nile Freight", 58, "Africa", "Logistics",
           30.0444, 31.2357
       );
 
