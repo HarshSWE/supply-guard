@@ -10,11 +10,7 @@
 
       <span
         class="px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap"
-        [ngClass]="{
-          'bg-red-100 text-red-700': supplier?.riskScore >= 70,
-          'bg-amber-100 text-amber-700': supplier?.riskScore >= 40 && supplier?.riskScore < 70,
-          'bg-green-100 text-green-700': supplier?.riskScore < 40
-        }"
+        [ngClass]="getRiskBadgeClasses()"
       >
         Risk Score: {{ supplier?.riskScore }}
       </span>

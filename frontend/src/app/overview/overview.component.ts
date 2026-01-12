@@ -7,6 +7,8 @@ import { Alert } from '../models/alert.model';
 import { Chart } from 'chart.js/auto';
 import * as L from 'leaflet';
 import { FormsModule } from '@angular/forms';
+import { RiskConfigService } from '../services/risk-config.service';
+import { RiskThresholds } from '../models/risk-thresholds.model';
 
 @Component({
   selector: 'app-overview',
@@ -27,13 +29,25 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   suppliers: any[] = [];
   map?: L.Map;
   private chart?: Chart;
+  riskThresholds?: RiskThresholds;
 
-  constructor(private dashboardService: DashboardService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private dashboardService: DashboardService,
+    private cdr: ChangeDetectorRef,
+    private riskConfig: RiskConfigService
+  ) {}
 
   ngOnInit(): void {
     this.loadDashboardStats();
     this.loadRiskTrend();
     this.loadAlerts();
+
+    this.riskConfig.getThresholds().subscribe((t) => {
+      if (t) {
+        this.riskThresholds = t;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -111,6 +125,7 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       next: (data) => {
         this.alerts = data;
         this.applyFilters();
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Failed to load alerts', err),
     });
@@ -160,8 +175,10 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getRiskColor(score: number): string {
-    if (score >= 75) return '#dc2626';
-    if (score >= 50) return '#f59e0b';
+    if (!this.riskThresholds) return '#16a34a';
+
+    if (score >= this.riskThresholds.high) return '#dc2626';
+    if (score >= this.riskThresholds.medium) return '#f59e0b';
     return '#16a34a';
   }
 

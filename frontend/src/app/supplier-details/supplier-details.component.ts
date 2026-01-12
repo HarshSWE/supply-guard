@@ -5,6 +5,8 @@ import { DashboardService } from '../services/dashboard.service';
 import { Chart } from 'chart.js/auto';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { RiskConfigService } from '../services/risk-config.service';
+import { RiskThresholds } from '../models/risk-thresholds.model';
 
 @Component({
   selector: 'app-supplier-details',
@@ -18,10 +20,12 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
   news: any[] = [];
   private trendChart?: Chart;
   private categoryChart?: Chart;
+  riskThresholds?: RiskThresholds;
 
   constructor(
     private route: ActivatedRoute,
     private dashboardService: DashboardService,
+    private riskConfig: RiskConfigService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -34,6 +38,12 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
       this.loadAlerts(+supplierId);
       this.loadNews(+supplierId);
     }
+    this.riskConfig.getThresholds().subscribe((t) => {
+      if (t) {
+        this.riskThresholds = t;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   loadSupplier(id: number): void {
@@ -273,6 +283,23 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     URL.revokeObjectURL(url);
   }
 
+  getRiskBadgeClasses(): string {
+    if (!this.supplier || !this.riskThresholds) {
+      return 'bg-green-100 text-green-700';
+    }
+
+    const score = this.supplier.riskScore;
+
+    if (score >= this.riskThresholds.high) {
+      return 'bg-red-100 text-red-700';
+    }
+
+    if (score >= this.riskThresholds.medium) {
+      return 'bg-amber-100 text-amber-700';
+    }
+
+    return 'bg-green-100 text-green-700';
+  }
   ngOnDestroy(): void {
     if (this.trendChart) {
       this.trendChart.destroy();
