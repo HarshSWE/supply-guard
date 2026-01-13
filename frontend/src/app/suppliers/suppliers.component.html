@@ -79,7 +79,7 @@
     </thead>
 
     <tbody>
-      <tr *ngFor="let s of suppliers" class="border-t hover:bg-slate-50">
+      <tr *ngFor="let s of suppliers()" class="border-t hover:bg-slate-50">
         <td class="p-3 font-medium">{{ s.name }}</td>
         <td class="p-3">{{ s.region }}</td>
         <td class="p-3">{{ s.industry }}</td>
@@ -114,7 +114,7 @@
         </td>
       </tr>
 
-      <tr *ngIf="suppliers.length === 0">
+      <tr *ngIf="suppliers().length === 0">
         <td colspan="6" class="p-6 text-center text-slate-500">
           No suppliers match the selected filters
         </td>

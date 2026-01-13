@@ -5,7 +5,7 @@
     >
       <p class="text-sm text-slate-600">Total Suppliers</p>
       <p class="text-3xl font-semibold text-blue-500 mt-2">
-        {{ stats?.totalSuppliers ?? '—' }}
+        {{ stats()?.totalSuppliers ?? '—' }}
       </p>
     </div>
 
@@ -14,7 +14,7 @@
     >
       <p class="text-sm text-slate-600">High-Risk Suppliers</p>
       <p class="text-3xl font-semibold text-red-500 mt-2">
-        {{ stats?.highRiskSuppliers ?? '—' }}
+        {{ stats()?.highRiskSuppliers ?? '—' }}
       </p>
     </div>
 
@@ -23,8 +23,8 @@
     >
       <p class="text-sm text-slate-600">Average Risk Score</p>
       <p class="text-3xl font-semibold text-slate-900 mt-2">
-        <ng-container *ngIf="stats?.averageRiskScore != null; else dash">
-          {{ stats?.averageRiskScore | number : '1.1-1' }}
+        <ng-container *ngIf="stats()?.averageRiskScore != null; else dash">
+          {{ stats()?.averageRiskScore | number : '1.1-1' }}
         </ng-container>
         <ng-template #dash>—</ng-template>
       </p>
@@ -35,7 +35,7 @@
     >
       <p class="text-sm text-slate-600">Active Alerts</p>
       <p class="text-3xl font-semibold text-red-600 mt-2">
-        {{ stats?.activeAlerts ?? '—' }}
+        {{ stats()?.activeAlerts ?? '—' }}
       </p>
     </div>
   </div>
@@ -62,7 +62,7 @@
 
       <div class="space-y-3 max-h-64 overflow-y-auto">
         <div
-          *ngFor="let alert of filteredAlerts"
+          *ngFor="let alert of filteredAlerts()"
           class="flex items-center justify-between p-3 border border-slate-200 rounded"
         >
           <span class="text-sm text-slate-900">
@@ -82,7 +82,7 @@
           </span>
         </div>
 
-        <div *ngIf="filteredAlerts.length === 0" class="text-sm text-slate-500">
+        <div *ngIf="filteredAlerts().length === 0" class="text-sm text-slate-500">
           No alerts match the selected filters
         </div>
       </div>
@@ -96,8 +96,8 @@
           <label class="text-sm text-slate-600">Region</label>
           <select
             class="w-full mt-1 bg-slate-50 border border-slate-300 rounded px-3 py-2 text-sm"
-            [(ngModel)]="selectedRegion"
-            (change)="applyFilters()"
+            [ngModel]="selectedRegion()"
+            (ngModelChange)="selectedRegion.set($event); applyFilters()"
           >
             <option>All</option>
             <option>North America</option>
@@ -112,8 +112,8 @@
           <label class="text-sm text-slate-600">Industry</label>
           <select
             class="w-full mt-1 bg-slate-50 border border-slate-300 rounded px-3 py-2 text-sm"
-            [(ngModel)]="selectedIndustry"
-            (change)="applyFilters()"
+            [ngModel]="selectedIndustry()"
+            (ngModelChange)="selectedIndustry.set($event); applyFilters()"
           >
             <option>All</option>
             <option>Manufacturing</option>
@@ -129,8 +129,8 @@
           <label class="text-sm text-slate-600">Risk Level</label>
           <select
             class="w-full mt-1 bg-slate-50 border border-slate-300 rounded px-3 py-2 text-sm"
-            [(ngModel)]="selectedRiskLevel"
-            (change)="applyFilters()"
+            [ngModel]="selectedRiskLevel()"
+            (ngModelChange)="selectedRiskLevel.set($event); applyFilters()"
           >
             <option>All</option>
             <option>CRITICAL</option>

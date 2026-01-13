@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardService } from '../services/dashboard.service';
 import { DashboardStats } from '../models/dashboard-stats.model';
@@ -16,66 +16,94 @@ import { RiskThresholds } from '../models/risk-thresholds.model';
   imports: [CommonModule, FormsModule],
   templateUrl: './overview.component.html',
 })
-export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
-  stats?: DashboardStats;
-  riskTrend: RiskTrendPoint[] = [];
-  alerts: Alert[] = [];
-  filteredAlerts: Alert[] = [];
+export class OverviewComponent implements OnInit, OnDestroy {
+  stats = signal<DashboardStats | null>(null);
+  riskTrend = signal<RiskTrendPoint[]>([]);
 
-  selectedRegion: string = 'All';
-  selectedIndustry: string = 'All';
-  selectedRiskLevel: string = 'All';
+  alerts = signal<Alert[]>([]);
+  filteredAlerts = signal<Alert[]>([]);
+
+  selectedRegion = signal<string>('All');
+  selectedIndustry = signal<string>('All');
+  selectedRiskLevel = signal<string>('All');
 
   suppliers: any[] = [];
   map?: L.Map;
   private chart?: Chart;
-  riskThresholds?: RiskThresholds;
+  riskThresholds = signal<RiskThresholds | null>(null);
 
-  constructor(
-    private dashboardService: DashboardService,
-    private cdr: ChangeDetectorRef,
-    private riskConfig: RiskConfigService
-  ) {}
+  constructor(private dashboardService: DashboardService, private riskConfig: RiskConfigService) {
+    effect(() => {
+      const trend = this.riskTrend();
+      if (trend.length > 0) {
+        this.renderChart(trend);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.loadDashboardStats();
     this.loadRiskTrend();
     this.loadAlerts();
+    this.loadSuppliers();
 
     this.riskConfig.getThresholds().subscribe((t) => {
       if (t) {
-        this.riskThresholds = t;
-        this.cdr.detectChanges();
+        this.riskThresholds.set(t);
       }
     });
   }
 
-  ngAfterViewInit(): void {
-    this.loadSuppliers();
-  }
-
   loadDashboardStats(): void {
     this.dashboardService.getDashboardStats().subscribe({
-      next: (data) => {
-        this.stats = data;
-        this.cdr.detectChanges();
-      },
+      next: (data) => this.stats.set(data),
       error: (err) => console.error('Failed to load dashboard stats', err),
     });
   }
 
   loadRiskTrend(): void {
     this.dashboardService.getRiskTrend().subscribe({
-      next: (data) => {
-        this.riskTrend = data;
-        this.cdr.detectChanges();
-        this.renderChart();
-      },
+      next: (data) => this.riskTrend.set(data),
       error: (err) => console.error('Failed to load risk trend', err),
     });
   }
 
-  renderChart(): void {
+  loadAlerts(): void {
+    this.dashboardService.getAlerts().subscribe({
+      next: (data) => {
+        this.alerts.set(data);
+        this.applyFilters();
+      },
+      error: (err) => console.error('Failed to load alerts', err),
+    });
+  }
+
+  loadSuppliers(): void {
+    this.dashboardService.getSuppliers().subscribe({
+      next: (data) => {
+        this.suppliers = data;
+        this.initMap();
+      },
+      error: (err) => console.error('Failed to load suppliers', err),
+    });
+  }
+
+  applyFilters(): void {
+    const alerts = this.alerts();
+    this.filteredAlerts.set(
+      alerts.filter((alert) => {
+        const matchesRegion =
+          this.selectedRegion() === 'All' || alert.supplier?.region === this.selectedRegion();
+        const matchesIndustry =
+          this.selectedIndustry() === 'All' || alert.supplier?.industry === this.selectedIndustry();
+        const matchesRisk =
+          this.selectedRiskLevel() === 'All' || alert.severity === this.selectedRiskLevel();
+        return matchesRegion && matchesIndustry && matchesRisk;
+      })
+    );
+  }
+
+  renderChart(data: RiskTrendPoint[]): void {
     if (this.chart) {
       this.chart.destroy();
     }
@@ -83,11 +111,11 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chart = new Chart('riskTrendChart', {
       type: 'line',
       data: {
-        labels: this.riskTrend.map((p) => p.snapshotDate),
+        labels: data.map((p) => p.snapshotDate),
         datasets: [
           {
             label: 'Average Risk Score',
-            data: this.riskTrend.map((p) => p.averageRiskScore),
+            data: data.map((p) => p.averageRiskScore),
             tension: 0.4,
             fill: false,
           },
@@ -102,42 +130,6 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
           },
         },
       },
-    });
-  }
-
-  applyFilters(): void {
-    this.filteredAlerts = this.alerts.filter((alert) => {
-      const matchesRegion =
-        this.selectedRegion === 'All' || alert.supplier?.region === this.selectedRegion;
-
-      const matchesIndustry =
-        this.selectedIndustry === 'All' || alert.supplier?.industry === this.selectedIndustry;
-
-      const matchesRisk =
-        this.selectedRiskLevel === 'All' || alert.severity === this.selectedRiskLevel;
-
-      return matchesRegion && matchesIndustry && matchesRisk;
-    });
-  }
-
-  loadAlerts(): void {
-    this.dashboardService.getAlerts().subscribe({
-      next: (data) => {
-        this.alerts = data;
-        this.applyFilters();
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Failed to load alerts', err),
-    });
-  }
-
-  loadSuppliers(): void {
-    this.dashboardService.getSuppliers().subscribe({
-      next: (data) => {
-        this.suppliers = data;
-        this.initMap();
-      },
-      error: (err) => console.error('Failed to load suppliers', err),
     });
   }
 
@@ -175,10 +167,10 @@ export class OverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getRiskColor(score: number): string {
-    if (!this.riskThresholds) return '#16a34a';
-
-    if (score >= this.riskThresholds.high) return '#dc2626';
-    if (score >= this.riskThresholds.medium) return '#f59e0b';
+    const thresholds = this.riskThresholds();
+    if (!thresholds) return '#16a34a';
+    if (score >= thresholds.high) return '#dc2626';
+    if (score >= thresholds.medium) return '#f59e0b';
     return '#16a34a';
   }
 

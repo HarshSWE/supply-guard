@@ -1,5 +1,5 @@
 <div
-  *ngIf="saved"
+  *ngIf="saved()"
   class="fixed top-5 right-5 bg-emerald-400 text-white px-4 py-2 rounded-lg shadow-lg text-sm animate-fade-in z-50 flex items-center gap-2"
 >
   Preferences saved
@@ -16,32 +16,34 @@
   <div class="w-full max-w-xl bg-white border rounded-lg p-6 space-y-6 shadow-sm">
     <h1 class="text-2xl font-semibold text-slate-800 text-center">Risk Configuration</h1>
 
-    <div>
+    <div *ngIf="thresholds() as t">
       <div class="flex justify-between text-sm font-medium mb-1">
         <span class="text-red-600">Critical</span>
-        <span class="text-slate-600">{{ thresholds?.high }}</span>
+        <span class="text-slate-600">{{ t.high }}</span>
       </div>
+
       <input
         type="range"
         min="0"
         max="100"
         step="1"
-        [(ngModel)]="thresholds.high"
+        [(ngModel)]="t.high"
         class="w-full range-slider range-red"
       />
     </div>
 
-    <div>
+    <div *ngIf="thresholds() as t">
       <div class="flex justify-between text-sm font-medium mb-1">
         <span class="text-amber-600">Moderate</span>
-        <span class="text-slate-600">{{ thresholds?.medium }}</span>
+        <span class="text-slate-600">{{ t.medium }}</span>
       </div>
+
       <input
         type="range"
         min="0"
         max="100"
         step="1"
-        [(ngModel)]="thresholds.medium"
+        [(ngModel)]="t.medium"
         class="w-full range-slider range-amber"
       />
     </div>
@@ -60,10 +62,10 @@
 
   <div class="divide-y">
     <div
-      *ngFor="let supplier of suppliers"
-      class="grid grid-cols-1 md:grid-cols-5 gap-4 p-4 items-center"
+      *ngFor="let supplier of suppliers()"
+      class="grid grid-cols-[2fr_1fr_2fr_auto] gap-4 p-6 items-center"
     >
-      <div class="font-medium text-slate-700">
+      <div class="font-medium text-slate-700 text-lg">
         {{ supplier.name }}
       </div>
 
@@ -72,24 +74,19 @@
         min="0"
         max="100"
         [(ngModel)]="supplier.riskScore"
-        class="border rounded px-2 py-1 w-full"
+        class="border border-gray-300 rounded px-3 py-2 w-full"
       />
 
-      <select [(ngModel)]="supplier.region" class="border rounded px-2 py-1 w-full">
-        <option *ngFor="let r of regions" [value]="r">
-          {{ r }}
-        </option>
-      </select>
-
-      <select [(ngModel)]="supplier.industry" class="border rounded px-2 py-1 w-full">
-        <option *ngFor="let i of industries" [value]="i">
-          {{ i }}
-        </option>
+      <select
+        [(ngModel)]="supplier.industry"
+        class="border border-gray-300 rounded px-3 py-2 w-full"
+      >
+        <option *ngFor="let i of industries" [value]="i">{{ i }}</option>
       </select>
 
       <button
         (click)="saveSupplier(supplier)"
-        class="px-3 py-1 bg-slate-900 text-white rounded hover:bg-slate-800"
+        class="px-6 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition whitespace-nowrap"
       >
         Save
       </button>

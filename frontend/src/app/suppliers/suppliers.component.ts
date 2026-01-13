@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,7 +12,7 @@ import { DashboardService } from '../services/dashboard.service';
   templateUrl: './suppliers.component.html',
 })
 export class SuppliersComponent implements OnInit {
-  suppliers: any[] = [];
+  suppliers = signal<any[]>([]);
 
   search = '';
   region = 'All';
@@ -38,8 +39,7 @@ export class SuppliersComponent implements OnInit {
       })
       .subscribe({
         next: (data) => {
-          this.suppliers = data;
-          this.cdr.detectChanges();
+          this.suppliers.set(data);
         },
         error: (err) => console.error('Failed to load suppliers', err),
       });

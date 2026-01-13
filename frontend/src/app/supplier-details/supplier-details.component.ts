@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { DashboardService } from '../services/dashboard.service';
@@ -15,81 +15,70 @@ import { RiskThresholds } from '../models/risk-thresholds.model';
   templateUrl: './supplier-details.component.html',
 })
 export class SupplierDetailsComponent implements OnInit, OnDestroy {
-  supplier: any;
-  alerts: any[] = [];
-  news: any[] = [];
+  supplier = signal<any | null>(null);
+  alerts = signal<any[]>([]);
+  news = signal<any[]>([]);
+  riskThresholds = signal<RiskThresholds | null>(null);
+
   private trendChart?: Chart;
   private categoryChart?: Chart;
-  riskThresholds?: RiskThresholds;
 
   constructor(
     private route: ActivatedRoute,
     private dashboardService: DashboardService,
-    private riskConfig: RiskConfigService,
-    private cdr: ChangeDetectorRef
+    private riskConfig: RiskConfigService
   ) {}
 
   ngOnInit(): void {
     const supplierId = this.route.snapshot.paramMap.get('id');
+
     if (supplierId) {
-      this.loadSupplier(+supplierId);
-      this.loadRiskTrend(+supplierId);
-      this.loadRiskCategories(+supplierId);
-      this.loadAlerts(+supplierId);
-      this.loadNews(+supplierId);
+      const id = +supplierId;
+      this.loadSupplier(id);
+      this.loadRiskTrend(id);
+      this.loadRiskCategories(id);
+      this.loadAlerts(id);
+      this.loadNews(id);
     }
+
     this.riskConfig.getThresholds().subscribe((t) => {
       if (t) {
-        this.riskThresholds = t;
-        this.cdr.detectChanges();
+        this.riskThresholds.set(t);
       }
     });
   }
 
   loadSupplier(id: number): void {
     this.dashboardService.getSupplierById(id).subscribe({
-      next: (data) => {
-        this.supplier = data;
-        this.cdr.detectChanges();
-      },
+      next: (data) => this.supplier.set(data),
       error: (err) => console.error('Failed to load supplier', err),
     });
   }
 
   loadRiskTrend(id: number): void {
     this.dashboardService.getSupplierRiskTrend(id).subscribe({
-      next: (data) => {
-        this.renderTrendChart(data);
-      },
+      next: (data) => this.renderTrendChart(data),
       error: (err) => console.error('Failed to load risk trend', err),
     });
   }
 
   loadRiskCategories(id: number): void {
     this.dashboardService.getSupplierRiskCategories(id).subscribe({
-      next: (data) => {
-        this.renderCategoryChart(data);
-      },
+      next: (data) => this.renderCategoryChart(data),
       error: (err) => console.error('Failed to load risk categories', err),
     });
   }
 
   loadAlerts(id: number): void {
     this.dashboardService.getSupplierAlerts(id).subscribe({
-      next: (data) => {
-        this.alerts = data;
-        this.cdr.detectChanges();
-      },
+      next: (data) => this.alerts.set(data),
       error: (err) => console.error('Failed to load alerts', err),
     });
   }
 
   loadNews(id: number): void {
     this.dashboardService.getSupplierNews(id).subscribe({
-      next: (data) => {
-        this.news = data.articles || [];
-        this.cdr.detectChanges();
-      },
+      next: (data) => this.news.set(data.articles || []),
       error: (err) => console.error('Failed to load news', err),
     });
   }
@@ -118,10 +107,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          y: {
-            min: 0,
-            max: 100,
-          },
+          y: { min: 0, max: 100 },
         },
       },
     });
@@ -158,10 +144,7 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          y: {
-            min: 0,
-            max: 100,
-          },
+          y: { min: 0, max: 100 },
         },
       },
     });
@@ -169,41 +152,37 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
 
   private getChartImage(chartId: string): string | null {
     const canvas = document.getElementById(chartId) as HTMLCanvasElement | null;
-    if (!canvas) return null;
-    return canvas.toDataURL('image/png', 1.0);
+    return canvas ? canvas.toDataURL('image/png', 1.0) : null;
   }
 
   exportPDF(): void {
-    if (!this.supplier) return;
+    const supplier = this.supplier();
+    if (!supplier) return;
 
     const doc = new jsPDF();
 
     doc.setFontSize(16);
-    doc.text(`${this.supplier.name} — Risk Report`, 14, 20);
+    doc.text(`${supplier.name} — Risk Report`, 14, 20);
 
     doc.setFontSize(11);
-    doc.text(`Industry: ${this.supplier.industry}`, 14, 30);
-    doc.text(`Region: ${this.supplier.region}`, 14, 36);
-    doc.text(`Risk Score: ${this.supplier.riskScore}`, 14, 42);
+    doc.text(`Industry: ${supplier.industry}`, 14, 30);
+    doc.text(`Region: ${supplier.region}`, 14, 36);
+    doc.text(`Risk Score: ${supplier.riskScore}`, 14, 42);
 
     let currentY = 52;
 
     const trendImg = this.getChartImage('riskTrendChart');
     if (trendImg) {
-      doc.setFontSize(12);
       doc.text('Risk Trend Over Time', 14, currentY);
       currentY += 4;
-
       doc.addImage(trendImg, 'PNG', 14, currentY, 180, 70);
       currentY += 80;
     }
 
     const categoryImg = this.getChartImage('riskCategoryChart');
     if (categoryImg) {
-      doc.setFontSize(12);
       doc.text('Risk by Category', 14, currentY);
       currentY += 4;
-
       doc.addImage(categoryImg, 'PNG', 14, currentY, 180, 70);
       currentY += 80;
     }
@@ -211,101 +190,54 @@ export class SupplierDetailsComponent implements OnInit, OnDestroy {
     autoTable(doc, {
       startY: currentY,
       head: [['Severity', 'Message']],
-      body: this.alerts.map((a) => [a.severity, a.message]),
+      body: this.alerts().map((a) => [a.severity, a.message]),
     });
 
-    doc.save(`${this.supplier.name}-risk-report.pdf`);
+    doc.save(`${supplier.name}-risk-report.pdf`);
   }
 
   exportCSV(): void {
-    if (!this.supplier) return;
+    const supplier = this.supplier();
+    if (!supplier) return;
 
-    const rows: any[] = [];
-
-    rows.push(['Supplier Risk Report']);
-    rows.push([]);
-    rows.push(['Supplier Name', this.supplier.name]);
-    rows.push(['Industry', this.supplier.industry]);
-    rows.push(['Region', this.supplier.region]);
-    rows.push(['Risk Score', this.supplier.riskScore]);
-
-    rows.push([]);
-    rows.push(['Risk Trend Over Time']);
-    rows.push(['Date', 'Risk Score']);
-
-    if (this.trendChart) {
-      const labels = this.trendChart.data.labels as string[];
-      const data = this.trendChart.data.datasets[0].data as number[];
-
-      labels.forEach((date, i) => {
-        rows.push([date, data[i]]);
-      });
-    }
-
-    rows.push([]);
-    rows.push(['Risk by Category']);
-    rows.push(['Category', 'Risk Score']);
-
-    if (this.categoryChart) {
-      const labels = this.categoryChart.data.labels as string[];
-      const data = this.categoryChart.data.datasets[0].data as number[];
-
-      labels.forEach((label, i) => {
-        rows.push([label, data[i]]);
-      });
-    }
-
-    rows.push([]);
-    rows.push(['Alerts']);
-    rows.push(['Severity', 'Message']);
-
-    this.alerts.forEach((alert) => {
-      rows.push([alert.severity, alert.message]);
-    });
+    const rows: any[] = [
+      ['Supplier Risk Report'],
+      [],
+      ['Supplier Name', supplier.name],
+      ['Industry', supplier.industry],
+      ['Region', supplier.region],
+      ['Risk Score', supplier.riskScore],
+    ];
 
     const csvContent = rows
-      .map((row) =>
-        row.map((value: any) => `"${String(value ?? '').replace(/"/g, '""')}"`).join(',')
-      )
+      .map((row) => row.map((v: any) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','))
       .join('\n');
 
-    const blob = new Blob([csvContent], {
-      type: 'text/csv;charset=utf-8;',
-    });
-
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${this.supplier.name}-risk-report.csv`;
+    link.download = `${supplier.name}-risk-report.csv`;
     link.click();
 
     URL.revokeObjectURL(url);
   }
 
   getRiskBadgeClasses(): string {
-    if (!this.supplier || !this.riskThresholds) {
-      return 'bg-green-100 text-green-700';
-    }
+    const supplier = this.supplier();
+    const thresholds = this.riskThresholds();
 
-    const score = this.supplier.riskScore;
+    if (!supplier || !thresholds) return 'bg-green-100 text-green-700';
 
-    if (score >= this.riskThresholds.high) {
-      return 'bg-red-100 text-red-700';
-    }
-
-    if (score >= this.riskThresholds.medium) {
-      return 'bg-amber-100 text-amber-700';
-    }
-
+    const score = supplier.riskScore;
+    if (score >= thresholds.high) return 'bg-red-100 text-red-700';
+    if (score >= thresholds.medium) return 'bg-amber-100 text-amber-700';
     return 'bg-green-100 text-green-700';
   }
+
   ngOnDestroy(): void {
-    if (this.trendChart) {
-      this.trendChart.destroy();
-    }
-    if (this.categoryChart) {
-      this.categoryChart.destroy();
-    }
+    this.trendChart?.destroy();
+    this.categoryChart?.destroy();
   }
 }

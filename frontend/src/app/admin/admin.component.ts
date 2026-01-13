@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -15,10 +15,9 @@ import { Supplier } from '../models/supplier.model';
   templateUrl: './admin.component.html',
 })
 export class AdminComponent implements OnInit {
-  thresholds!: RiskThresholds;
-  saved = false;
-
-  suppliers: Supplier[] = [];
+  thresholds = signal<RiskThresholds | null>(null);
+  saved = signal(false);
+  suppliers = signal<Supplier[]>([]);
 
   regions = ['North America', 'Europe', 'Asia', 'Africa', 'South America'];
 
@@ -33,13 +32,14 @@ export class AdminComponent implements OnInit {
 
   constructor(
     private riskConfig: RiskConfigService,
-    private supplierService: AdminSupplierService,
-    private cdr: ChangeDetectorRef
+    private supplierService: AdminSupplierService
   ) {}
 
   ngOnInit(): void {
     this.riskConfig.getThresholds().subscribe((t) => {
-      if (t) this.thresholds = { ...t };
+      if (t) {
+        this.thresholds.set({ ...t });
+      }
     });
 
     this.loadSuppliers();
@@ -47,24 +47,23 @@ export class AdminComponent implements OnInit {
 
   loadSuppliers(): void {
     this.supplierService.getSuppliers().subscribe((data) => {
-      this.suppliers = data;
-      this.cdr.detectChanges();
+      this.suppliers.set(data);
     });
   }
 
   saveSupplier(supplier: Supplier): void {
     this.supplierService.updateSupplier(supplier).subscribe((updated) => {
-      Object.assign(supplier, updated);
+      this.suppliers.update((list) => list.map((s) => (s.id === updated.id ? updated : s)));
     });
   }
 
   save(): void {
-    this.riskConfig.updateThresholds(this.thresholds);
+    const current = this.thresholds();
+    if (!current) return;
 
-    this.saved = true;
-    setTimeout(() => {
-      this.saved = false;
-      this.cdr.detectChanges();
-    }, 2000);
+    this.riskConfig.updateThresholds(current);
+
+    this.saved.set(true);
+    setTimeout(() => this.saved.set(false), 2000);
   }
 }
