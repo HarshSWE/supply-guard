@@ -110,6 +110,57 @@ public class DataInitializer {
           new SupplierRiskSnapshot(s3, 72, LocalDate.now())
       ));
 
+
+        supplierRiskSnapshotRepo.saveAll(List.of(
+            new SupplierRiskSnapshot(s2, 42, LocalDate.now().minusDays(30)),
+            new SupplierRiskSnapshot(s2, 44, LocalDate.now().minusDays(25)),
+            new SupplierRiskSnapshot(s2, 45, LocalDate.now().minusDays(20)),
+            new SupplierRiskSnapshot(s2, 46, LocalDate.now().minusDays(15)),
+            new SupplierRiskSnapshot(s2, 45, LocalDate.now().minusDays(10)),
+            new SupplierRiskSnapshot(s2, 44, LocalDate.now().minusDays(5)),
+            new SupplierRiskSnapshot(s2, 45, LocalDate.now())
+        ));
+
+        supplierRiskSnapshotRepo.saveAll(List.of(
+            new SupplierRiskSnapshot(s4, 88, LocalDate.now().minusDays(30)),
+            new SupplierRiskSnapshot(s4, 90, LocalDate.now().minusDays(25)),
+            new SupplierRiskSnapshot(s4, 92, LocalDate.now().minusDays(20)),
+            new SupplierRiskSnapshot(s4, 94, LocalDate.now().minusDays(15)),
+            new SupplierRiskSnapshot(s4, 93, LocalDate.now().minusDays(10)),
+            new SupplierRiskSnapshot(s4, 91, LocalDate.now().minusDays(5)),
+            new SupplierRiskSnapshot(s4, 91, LocalDate.now())
+        ));
+
+        supplierRiskSnapshotRepo.saveAll(List.of(
+            new SupplierRiskSnapshot(s5, 35, LocalDate.now().minusDays(30)),
+            new SupplierRiskSnapshot(s5, 34, LocalDate.now().minusDays(25)),
+            new SupplierRiskSnapshot(s5, 33, LocalDate.now().minusDays(20)),
+            new SupplierRiskSnapshot(s5, 32, LocalDate.now().minusDays(15)),
+            new SupplierRiskSnapshot(s5, 31, LocalDate.now().minusDays(10)),
+            new SupplierRiskSnapshot(s5, 33, LocalDate.now().minusDays(5)),
+            new SupplierRiskSnapshot(s5, 33, LocalDate.now())
+        ));
+
+        supplierRiskSnapshotRepo.saveAll(List.of(
+            new SupplierRiskSnapshot(s6, 55, LocalDate.now().minusDays(30)),
+            new SupplierRiskSnapshot(s6, 56, LocalDate.now().minusDays(25)),
+            new SupplierRiskSnapshot(s6, 58, LocalDate.now().minusDays(20)),
+            new SupplierRiskSnapshot(s6, 59, LocalDate.now().minusDays(15)),
+            new SupplierRiskSnapshot(s6, 60, LocalDate.now().minusDays(10)),
+            new SupplierRiskSnapshot(s6, 58, LocalDate.now().minusDays(5)),
+            new SupplierRiskSnapshot(s6, 58, LocalDate.now())
+        ));
+
+        supplierRiskSnapshotRepo.saveAll(List.of(
+            new SupplierRiskSnapshot(s7, 65, LocalDate.now().minusDays(30)),
+            new SupplierRiskSnapshot(s7, 66, LocalDate.now().minusDays(25)),
+            new SupplierRiskSnapshot(s7, 68, LocalDate.now().minusDays(20)),
+            new SupplierRiskSnapshot(s7, 69, LocalDate.now().minusDays(15)),
+            new SupplierRiskSnapshot(s7, 70, LocalDate.now().minusDays(10)),
+            new SupplierRiskSnapshot(s7, 68, LocalDate.now().minusDays(5)),
+            new SupplierRiskSnapshot(s7, 67, LocalDate.now())
+        ));
+
     };
   }
 }
