@@ -77,3 +77,18 @@ Open your web browser and navigate to:
 ```
 http://localhost:4200
 ```
+### Demo Pictures
+
+<img width="1919" height="876" alt="Picture1" src="https://github.com/user-attachments/assets/a7553ca7-729a-4003-a4d6-c77fbe23c1f1" />
+
+<br/><br/><br/>
+
+<img width="1918" height="881" alt="Picture2" src="https://github.com/user-attachments/assets/27627f75-55c0-41ff-96b2-4ed28e649b24" />
+
+<br/><br/><br/>
+
+<img width="1919" height="873" alt="Picture3" src="https://github.com/user-attachments/assets/26203306-81be-44b9-a421-79b2e4d665f8" />
+
+<br/><br/><br/>
+
+<img width="1919" height="876" alt="Picture4" src="https://github.com/user-attachments/assets/e925c931-9cec-4376-812b-41fb99f7844e" />
