@@ -92,3 +92,7 @@ http://localhost:4200
 <br/><br/><br/>
 
 <img width="1919" height="876" alt="Picture4" src="https://github.com/user-attachments/assets/e925c931-9cec-4376-812b-41fb99f7844e" />
+
+<br/><br/><br/>
+
+Note: This prototype makes use of mock data as accessing real world supplier data is difficult or costly through available APIs.
