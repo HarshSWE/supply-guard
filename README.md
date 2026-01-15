@@ -83,7 +83,7 @@ http://localhost:4200
 
 <br/><br/><br/>
 
-<img width="1918" height="881" alt="Picture2" src="https://github.com/user-attachments/assets/27627f75-55c0-41ff-96b2-4ed28e649b24" />
+<img width="1915" height="877" alt="Picture2" src="https://github.com/user-attachments/assets/6a7a7155-a28c-43de-bb20-7f714e2f6ab9" />
 
 <br/><br/><br/>
 
