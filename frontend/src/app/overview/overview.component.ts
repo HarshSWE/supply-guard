@@ -27,7 +27,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   selectedIndustry = signal<string>('All');
   selectedRiskLevel = signal<string>('All');
 
-  suppliers: any[] = [];
+  suppliers = signal<any[]>([]);
   map?: L.Map;
   private chart?: Chart;
   riskThresholds = signal<RiskThresholds | null>(null);
@@ -42,8 +42,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     effect(() => {
       const thresholds = this.riskThresholds();
-      if (thresholds && this.suppliers.length > 0) {
-        this.initMap();
+      const suppliers = this.suppliers();
+      
+      if (thresholds && suppliers.length > 0) {
+        setTimeout(() => this.initMap(), 0);
       }
     });
   }
@@ -88,7 +90,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   loadSuppliers(): void {
     this.dashboardService.getSuppliers().subscribe({
       next: (data) => {
-        this.suppliers = data;
+        this.suppliers.set(data);
       },
       error: (err) => console.error('Failed to load suppliers', err),
     });
@@ -144,13 +146,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.map.remove();
     }
 
+    const mapContainer = document.getElementById('supplierMap');
+    if (!mapContainer) {
+      console.warn('Map container not found');
+      return;
+    }
+
     this.map = L.map('supplierMap').setView([20, 0], 2);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
     }).addTo(this.map);
 
-    this.suppliers.forEach((supplier) => {
+    this.suppliers().forEach((supplier) => {
       if (!supplier.latitude || !supplier.longitude) return;
 
       const color = this.getRiskColor(supplier.riskScore);
