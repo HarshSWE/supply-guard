@@ -39,6 +39,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.renderChart(trend);
       }
     });
+
+    effect(() => {
+      const thresholds = this.riskThresholds();
+      if (thresholds && this.suppliers.length > 0) {
+        this.initMap();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -82,7 +89,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.dashboardService.getSuppliers().subscribe({
       next: (data) => {
         this.suppliers = data;
-        this.initMap();
       },
       error: (err) => console.error('Failed to load suppliers', err),
     });
