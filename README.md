@@ -65,6 +65,7 @@ The backend will start on `http://localhost:8080` (or the port configured in you
 ```bash
 # From root directory
 cd frontend
+npm install
 ng serve
 ```
 
