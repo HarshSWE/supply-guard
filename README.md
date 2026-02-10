@@ -96,4 +96,4 @@ http://localhost:4200
 
 <br/><br/><br/>
 
-Note: This prototype makes use of mock data as accessing real world supplier data is difficult or costly through available APIs.
+Note: Mock data is used in this prototype due to paywalled access to real-world supplier APIs.
